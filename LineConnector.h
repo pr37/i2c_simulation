@@ -12,6 +12,10 @@ class LineConnector
 	public:
 		LineConnector() {
 		}
+		~LineConnector() {
+			delete this;
+		}
+
 		void master_set_sda(bool byte_data) {
 			this->SDA = byte_data;
 		}

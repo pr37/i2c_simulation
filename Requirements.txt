@@ -1,110 +1,57 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1">this is my long string</data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        [base64 mime encoded serialized CLR Framework object]
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        [base64 mime encoded string representing a byte array form of the CLR Framework object]
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a CLR class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
+﻿
+HW requirements:
 
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-</root>
+1. There can be multiple masters controlling single, or multiple slaves.
+
+2. There are two lines:
+	SDA (Serial Data) – The line for the master and slave to send and receive data.
+
+	SCL (Serial Clock) – The line that carries the clock signal.
+
+3. I2C is synchronous, so the output of bits is synchronized to the sampling of bits by a clock signal shared 
+   between the master and the slave.
+
+4. The clock signal is always controlled by the master.
+
+5. Data is transferred in messages. Messages are broken up into frames of data. 
+
+		[START Bit] [Address frame] [Read/Write bit] [ACK/NACK] [Data Frame 1] [ACK/NACK] [Data Frame 2] [ACK/NACK] [Data Frame N] [ACK/NACK] [Stop bit]
+bits:        1           7 or 10			1			  1			   8		    1			8			   1			8			1			1
+
+6. Start Condition: The SDA line switches from a high voltage level to a low voltage level before the SCL line switches from high to low.
+
+7. Stop Condition: The SDA line switches from a low voltage level to a high voltage level after the SCL line switches from low to high.
+
+8. Address Frame: A 7 or 10 bit sequence unique to each slave that identifies the slave when the master wants to talk to it.
+
+9. Read/Write Bit: A single bit specifying whether the master is sending data to the slave (low voltage level) or requesting data from it (high voltage level).
+
+10. ACK/NACK Bit: Each frame in a message is followed by an acknowledge/no-acknowledge bit. If an address frame or data frame was successfully received, an ACK bit is returned to the sender from the receiving device.
+
+11. 1. The master sends the start condition to every connected slave by switching the SDA line from a high voltage
+level to a low voltage level before switching the SCL line from high to low.
+
+11. The master sends the address of the slave it wants to communicate with to every slave connected to it. 
+Each slave then compares the address sent from the master to its own address. 
+If the address matches, it sends a low voltage ACK bit back to the master. 
+If the address doesn’t match, the slave does nothing and the SDA line remains high.
+
+12. The data frame is always 8 bits long, and sent with the most significant bit first. (Big Endian)
+
+13. After all of the data frames have been sent, the master can send a stop condition to the slave to halt the transmission. 
+The stop condition is a voltage transition from low to high on the SDA line after a low to high transition on the SCL line, 
+with the SCL line remaining high.
+
+14. For the clock frequency:
+    F = 1/T, where T=Ton+Toff, DutyCycle=Ton/T
+	Ton = 1ms
+	Toff = 1ms
+
+
+
+SW Requirements:
+
+1. SW shall implement a LineConnector class that will act as a connection between devices (masters/slaves).
+2. SW shall implement a generic class Device that will be the base of the Master and Slave classes.
+3. SW shall implement Master class.
+4. SW shall implement Slave class.
