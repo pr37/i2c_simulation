@@ -1,4 +1,4 @@
-﻿
+﻿Source: https://ww1.microchip.com/downloads/en/Appnotes/00554c.pdf
 HW requirements:
 
 1. There can be multiple masters controlling single, or multiple slaves.
@@ -47,6 +47,16 @@ with the SCL line remaining high.
 	Ton = 1ms
 	Toff = 1ms
 
+15. In the I2C Bus, the clock (SCL line) is always provided
+by the master. However, the slave can hold the line low
+even though the master has released it. The master
+must check this condition and wait for the slave to
+release the clock line. This provides a built-in wait state
+for the I2C Bus. 
+
+16.  the clock is held low for too long,
+say 1 ms, then an error condition is assumed and a
+T0CKI interrupt is generated
 
 
 SW Requirements:
@@ -55,3 +65,4 @@ SW Requirements:
 2. SW shall implement a generic class Device that will be the base of the Master and Slave classes.
 3. SW shall implement Master class.
 4. SW shall implement Slave class.
+5. SW shall implement threading to utilize Mutex for the Data and Clock lines.

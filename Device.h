@@ -7,9 +7,11 @@ using namespace std;
 class Device
 {
 public:
-	virtual void init_device(); //here would be a good idea to load all slave addresses
-	virtual void set_connection(LineConnector* c);
-	virtual void expect_ack();
+	//virtual void init_device(); //here would be a good idea to load all slave addresses
+	void set_connection(LineConnector* c) {
+		this->connection = c;
+	}
+	//virtual void expect_ack();
 protected:
 	LineConnector* connection;
 	char status_register; //current bus status
